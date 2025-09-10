@@ -1,39 +1,59 @@
 <!DOCTYPE html>
 <html lang="he">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>משחק סט 🟧💙🟢</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>משחק סט 🟧💙🟢</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <!-- דף התחלה עם טופס להזנת שם -->
-    <div id="pageStart">
-        <h1>!!!ברוכים הבאים למשחק סט</h1>
-        <form id="formStartGame">
-            <input id="inputPlayerName" type="text" placeholder="הזן את שמך">
-            <button id="btnStartGame">התחל משחק</button>
-        </form>
-    </div>
+  <!-- דף התחלה עם טופס להזנת שם -->
+  <div id="pageStart">
+    <h1>!!!ברוכים הבאים למשחק סט</h1>
+    <form id="formStartGame">
+      <input id="inputPlayerName" type="text" placeholder="הזן את שמך">
+      <button id="btnStartGame">התחל משחק</button>
+    </form>
+  </div>
 
-    <!-- אזור שבו יוצגו כל הקלפים -->
-    <div id="allCards"></div>
+  <!-- אזור שבו יוצגו כל הקלפים -->
+  <div id="allCards"></div>
 
-    <!-- כפתור להוספת קלף -->
-    <button id="btnAddCard">הוסף קלף</button>
+  <!-- כפתור להוספת קלף -->
+  <button id="btnAddCard">הוסף קלף</button>
 
-    <!-- כפתור להתחלה מחדש -->
-    <div id="startAgainContainer"></div>
+  <!-- כפתור להתחלה מחדש -->
+  <div id="startAgainContainer"></div>
 
-    <!-- תוצאות ושיא -->
-    <div id="res">
-        <div id="results"></div>
-        <div id="peak"></div>
-    </div>
+  <!-- תוצאות ושיא -->
+  <div id="res">
+    <div id="results"></div>
+    <div id="peak"></div>
+  </div>
+  <!-- כפתור הוראות בצד -->
+  <button id="btnInstructions">הוראות</button>
 
-    <!-- סקריפטים -->
-    <script src="js/arr.js"></script>
-    <script src="js/index.js"></script>
-    <script src="js/localhost.js"></script>
+  <!-- חלונית הוראות -->
+  <div id="instructionsBox">
+    <h2>הוראות המשחק</h2>
+    <p>
+      1. הוסף קלפים ללוח.<br>
+      2. בחר 3 קלפים כדי לבדוק אם הם סט נכון.<br>
+      3. אם בחרת סט נכון – נקודות יתווספו.<br>
+      4. אם בחרת סט שגוי – הנקודות יורדו.<br>
+      5. ניתן להתחיל מחדש בכל עת באמצעות הכפתור "התחל מחדש".<br>
+      6. לוח ניצחונות – הצג את השיאים שלך ושל שחקנים אחרים.
+    </p>
+    <button id="closeInstructions">סגור</button>
+  </div>
+
+
+  <!-- סקריפטים -->
+  <script src="js/arr.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/localhost.js"></script>
 </body>
+
 </html>

@@ -21,7 +21,7 @@ function loadPlayersFromLocalStorage() {
 function startGame() {
     const form = document.querySelector("#formStartGame");
     form.addEventListener('submit', (event) => {
-        event.preventDefault(); // שימוש ב-preventDefault
+        event.preventDefault();
         playerName = document.getElementById('inputPlayerName').value.trim();
 
         if (playerName) {
@@ -37,6 +37,25 @@ function startGame() {
             msgBox.innerText = '❗ אנא הזן שם תקין.';
         }
     });
+}
+
+// עדכון לוח הניצחונות
+function updateLeaderboard() {
+    let lb = document.getElementById('leaderboard');
+    if(!lb) {
+        lb = document.createElement('div');
+        lb.id = 'leaderboard';
+        lb.style.cssText = 'margin-top:10px; font-size:18px; color:#ec7c31; border:1px solid #002060; padding:10px; border-radius:5px;';
+        document.querySelector("#startAgainContainer").appendChild(lb);
+    }
+    lb.innerHTML = '';
+    players.sort((a,b) => b.score - a.score);
+    players.forEach(p => {
+        const pElem = document.createElement('p');
+        pElem.innerText = `${p.name}: ${p.score}`;
+        lb.appendChild(pElem);
+    });
+    lb.style.display = 'block';
 }
 
 // טעינת הנתונים בעת טעינת הדף

@@ -32,6 +32,7 @@ function drawCard(cardNumber) {
     buttonCounter++;
     const button = document.createElement('button');
     button.id = `btn${buttonCounter}`;
+    button.classList.add('cardButton'); 
 
     const img = document.createElement('img');
     img.src = `images/${cardNumber}.PNG`;
@@ -40,22 +41,22 @@ function drawCard(cardNumber) {
 
     document.querySelector("#allCards").appendChild(button);
 
-    // טיפול בלחיצה על קלף
-    button.addEventListener('click', (event) => {
-        handleCardSelection(event, button);
+    // הדגשה בלחיצה
+    button.addEventListener('click', () => {
+        handleCardSelection(button);
+        button.classList.toggle('selected');
     });
 }
 
-// פונקציה לטיפול בבחירת קלף
-function handleCardSelection(event, button) {
+// טיפול בבחירת קלף
+function handleCardSelection(button) {
     const num = +button.getAttribute('data-img');
 
     if (selectedButtons.includes(button.id)) {
-        button.classList.remove('selected');
         removeFromArray(selectedCards, num);
         removeFromArray(selectedButtons, button.id);
+        button.classList.remove('selected');
     } else {
-        button.classList.add('selected');
         selectedCards.push(num);
         selectedButtons.push(button.id);
     }
@@ -73,7 +74,7 @@ function handleCardSelection(event, button) {
     }
 }
 
-// פונקציה להסרת ערך ממערך
+// הסרת ערך ממערך
 function removeFromArray(arr, val) {
     const index = arr.indexOf(val);
     if (index !== -1) arr.splice(index, 1);
@@ -84,6 +85,7 @@ function createRestartButton() {
     const btn = document.createElement('button');
     btn.innerText = "התחל מחדש";
     btn.id = "btnRestart";
+    btn.style.cssText = ""; // עיצוב המקורי שלך
     document.querySelector("#startAgainContainer").appendChild(btn);
 
     btn.onclick = () => {
@@ -98,16 +100,45 @@ function createRestartButton() {
         document.querySelector("#allCards").style.display = 'block';
         document.querySelector("#btnAddCard").style.display = 'block';
         messageBox.innerText = '';
+        const lb = document.getElementById('leaderboard');
+        if(lb) lb.style.display = 'none';
     };
 }
 
 // כפתור להוספת קלף
-document.querySelector("#btnAddCard").onclick = () => {
+const btnAddCard = document.querySelector("#btnAddCard");
+btnAddCard.style.cssText = ""; // עיצוב המקורי
+btnAddCard.onclick = () => {
     score -= 2;
     drawCardsRandomly(1);
 }
 
-// פונקציה לבדיקה אם 3 קלפים יוצרים סט
+// כפתור לוח ניצחונות
+const btnShowLeaderboard = document.createElement('button');
+btnShowLeaderboard.id = 'btnShowLeaderboard';
+btnShowLeaderboard.innerText = "לוח ניצחונות";
+btnShowLeaderboard.style.cssText = ""; // עיצוב כמו שאר הכפתורים
+document.querySelector("#startAgainContainer").appendChild(btnShowLeaderboard);
+
+btnShowLeaderboard.onclick = () => {
+    let lb = document.getElementById('leaderboard');
+    if(!lb) {
+        lb = document.createElement('div');
+        lb.id = 'leaderboard';
+        lb.style.cssText = 'margin-top:10px; font-size:18px; color:#ec7c31; border:1px solid #002060; padding:10px; border-radius:5px;';
+        document.querySelector("#startAgainContainer").appendChild(lb);
+    }
+    lb.innerHTML = '';
+    players.sort((a,b) => b.score - a.score);
+    players.forEach(p => {
+        const pElem = document.createElement('p');
+        pElem.innerText = `${p.name}: ${p.score}`;
+        lb.appendChild(pElem);
+    });
+    lb.style.display = 'block';
+}
+
+// בדיקת סט
 function checkSet(cards) {
     const checkProperty = prop => {
         const vals = cards.map(i => arrCards[i - 1][prop]);
@@ -120,9 +151,8 @@ function checkSet(cards) {
             setCounter++;
             score += 5;
             messageBox.innerText = "✅ סט נכון!";
-
-            if (setCounter <= maxSets) {
-                replaceSetWithNewCards(cards); // החלפה אקראית של הסט הנכון
+            if(setCounter <= maxSets) {
+                replaceSetWithNewCards(cards);
             } else {
                 endGame();
             }
@@ -131,29 +161,22 @@ function checkSet(cards) {
             messageBox.innerText = "❌ סט שגוי!";
         }
     }
-
-    // שימוש נוסף ב-map, filter, find, replace לדוגמה:
-    const cardNames = cards.map(i => arrCards[i - 1].name);
-    const filtered = cardNames.filter(n => n > 10);
-    const found = cardNames.find(n => n % 2 === 0);
-    const replacedText = messageBox.innerText.replace("סט", "כרטיסים");
-    console.log({ cardNames, filtered, found, replacedText });
 }
 
-// החלפה של סט נכון ב-3 קלפים חדשים
+// החלפת סט נכון בקלפים חדשים
 function replaceSetWithNewCards(setIndexes) {
     setIndexes.forEach(i => {
-        const idx = usedCards.indexOf(i);
-        if (idx !== -1) {
-            usedCards.splice(idx, 1);
-            const newCardNum = generateRandomCardNumber();
-            drawCard(newCardNum);
-            usedCards.push(newCardNum);
-        }
+        const btn = Array.from(document.querySelectorAll("#allCards button"))
+                        .find(b => +b.getAttribute('data-img') === i);
+        if (btn) btn.remove();
+        removeFromArray(usedCards, i);
+
+        const newCardNum = generateRandomCardNumber();
+        drawCard(newCardNum);
+        usedCards.push(newCardNum);
     });
 }
 
-// יצירת קלף אקראי למטרה הזו
 function generateRandomCardNumber() {
     let randomNumber;
     do {
@@ -164,18 +187,16 @@ function generateRandomCardNumber() {
 
 // סיום המשחק
 function endGame() {
-    alert("סיימת את המשחק! כל הכבוד!");
+    messageBox.innerText = "סיימת את המשחק! כל הכבוד!";
     document.querySelector("#allCards").style.display = 'none';
     document.querySelector("#btnAddCard").style.display = 'none';
+    updateLeaderboard();
 }
 
-// אירוע נוסף - Scroll
-window.addEventListener('scroll', (event) => {
+// Scroll ו-Keydown
+window.addEventListener('scroll', () => {
     document.body.style.backgroundColor = window.scrollY > 50 ? '#f0f0f0' : 'white';
 });
-
-// אירוע נוסף - Keydown
 window.addEventListener('keydown', (event) => {
-    if (event.key === "r") document.getElementById('btnRestart').click();
+    if(event.key === "r") document.getElementById('btnRestart').click();
 });
-
