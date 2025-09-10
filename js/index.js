@@ -6,6 +6,7 @@ let buttonCounter = 0;
 let score = 100;
 let setCounter = 0;
 let playerName;
+const maxSets = 20;
 
 // הצגת הודעות במקום alert
 const messageBox = document.createElement('div');
@@ -119,6 +120,12 @@ function checkSet(cards) {
             setCounter++;
             score += 5;
             messageBox.innerText = "✅ סט נכון!";
+
+            if (setCounter <= maxSets) {
+                replaceSetWithNewCards(cards); // החלפה אקראית של הסט הנכון
+            } else {
+                endGame();
+            }
         } else {
             score -= 3;
             messageBox.innerText = "❌ סט שגוי!";
@@ -133,6 +140,35 @@ function checkSet(cards) {
     console.log({ cardNames, filtered, found, replacedText });
 }
 
+// החלפה של סט נכון ב-3 קלפים חדשים
+function replaceSetWithNewCards(setIndexes) {
+    setIndexes.forEach(i => {
+        const idx = usedCards.indexOf(i);
+        if (idx !== -1) {
+            usedCards.splice(idx, 1);
+            const newCardNum = generateRandomCardNumber();
+            drawCard(newCardNum);
+            usedCards.push(newCardNum);
+        }
+    });
+}
+
+// יצירת קלף אקראי למטרה הזו
+function generateRandomCardNumber() {
+    let randomNumber;
+    do {
+        randomNumber = Math.floor(Math.random() * 81) + 1;
+    } while (usedCards.includes(randomNumber));
+    return randomNumber;
+}
+
+// סיום המשחק
+function endGame() {
+    alert("סיימת את המשחק! כל הכבוד!");
+    document.querySelector("#allCards").style.display = 'none';
+    document.querySelector("#btnAddCard").style.display = 'none';
+}
+
 // אירוע נוסף - Scroll
 window.addEventListener('scroll', (event) => {
     document.body.style.backgroundColor = window.scrollY > 50 ? '#f0f0f0' : 'white';
@@ -142,3 +178,4 @@ window.addEventListener('scroll', (event) => {
 window.addEventListener('keydown', (event) => {
     if (event.key === "r") document.getElementById('btnRestart').click();
 });
+

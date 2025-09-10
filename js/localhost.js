@@ -39,32 +39,6 @@ function startGame() {
     });
 }
 
-// שימוש נוסף ב-DOM: יצירת רשימת שחקנים
-function showLeaderboard() {
-    const leaderboard = document.createElement('div');
-    leaderboard.id = 'leaderboard';
-    leaderboard.style.cssText = 'margin-top:20px; font-size:20px; color:#ec7c31;';
-    
-    // מיון לפי ניקוד בסדר יורד
-    players.sort((a, b) => b.score - a.score);
-
-    players.forEach(p => {
-        const pElem = document.createElement('p');
-        pElem.innerText = `${p.name}: ${p.score}`;
-        leaderboard.appendChild(pElem);
-    });
-
-    document.body.appendChild(leaderboard);
-}
-
-// אירוע נוסף – כפתור להצגת לוח אלופים
-const btnShowLeaderboard = document.createElement('button');
-btnShowLeaderboard.id = 'btnShowLeaderboard';
-btnShowLeaderboard.innerText = 'לוח אלופים';
-btnShowLeaderboard.style.cssText = 'margin-top:10px; font-size:18px;';
-document.body.appendChild(btnShowLeaderboard);
-btnShowLeaderboard.addEventListener('click', showLeaderboard);
-
 // טעינת הנתונים בעת טעינת הדף
 document.addEventListener('DOMContentLoaded', () => {
     loadPlayersFromLocalStorage();
